@@ -27,3 +27,9 @@ export const MyApp = () => {
 ```bash
 npm add react-supergrid
 ```
+
+## More
+
+- [use-mouse-matrix-transform](https://github.com/seveibar/use-mouse-matrix-transform)
+- [transformation-matrix](https://github.com/chrvadala/transformation-matrix)
+- [tscircuit](https://tscircuit.com) [(github)](https://github.com/tscircuit/tscircuit)
