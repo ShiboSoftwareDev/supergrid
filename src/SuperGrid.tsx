@@ -1,6 +1,20 @@
 import React, { useEffect, useRef, useState } from "react"
 import { type Matrix, applyToPoint, inverse } from "transformation-matrix"
 
+const rangeInclusive = (start: number, end: number, inc: number) => {
+  const result = []
+  if (end < start) {
+    for (let i = start; i >= end; i -= Math.abs(inc)) {
+      result.push(i)
+    }
+  } else {
+    for (let i = start; i <= end; i += Math.abs(inc)) {
+      result.push(i)
+    }
+  }
+  return result
+}
+
 export interface SuperGridProps {
   /**
    * Represents the transformation between world and screen coordinates
@@ -74,6 +88,7 @@ export const SuperGrid = (props: SuperGridProps) => {
      */
     const Z =
       screenSpaceCellSize / 10 ** Math.floor(Math.log10(props.transform.a))
+    const yInvN = props.transform.d < 0 ? -1 : 1
     /**
      * Size of a minor cell in transform space.
      */
@@ -105,7 +120,9 @@ export const SuperGrid = (props: SuperGridProps) => {
         ctx.stroke()
       }
       // Horizontal Lines
-      for (y = start.y; y <= end.y; y += cellSize) {
+      const rowYs = rangeInclusive(start.y, end.y, cellSize * yInvN)
+      // for (y = start.y; y <= end.y; y += cellSize) {
+      for (const y of rowYs) {
         lineStart = applyToPoint(props.transform, { x: start.x, y })
         lineEnd = applyToPoint(props.transform, { x: end.x, y })
         ctx.beginPath()
@@ -122,8 +139,9 @@ export const SuperGrid = (props: SuperGridProps) => {
     ) {
       const cellSize = z
       let x: number, y: number
+
       for (x = start.x; x <= end.x; x += cellSize) {
-        for (y = start.y; y <= end.y; y += cellSize) {
+        for (const y of rangeInclusive(start.y, end.y, cellSize * yInvN)) {
           const point = applyToPoint(props.transform, { x, y })
           ctx.fillStyle = textColor
           ctx.font = `12px sans-serif`
@@ -138,28 +156,32 @@ export const SuperGrid = (props: SuperGridProps) => {
 
     const zRoundedOffsetTopLeft = {
       x: Math.floor((topLeft.x - Z) / Z) * Z,
-      y: Math.floor((topLeft.y - Z) / Z) * Z,
+      // when y is cartesian (yInvN = -1), we need to add 2 rows to the top
+      y: Math.floor((topLeft.y - Z) / Z + (yInvN == -1 ? 2 : 0)) * Z,
     }
     const zRoundedOffsetBottomRight = {
       x: zRoundedOffsetTopLeft.x + Z * cellScreenWidth,
-      y: zRoundedOffsetTopLeft.y + Z * cellScreenHeight,
+      y: zRoundedOffsetTopLeft.y + Z * cellScreenHeight * yInvN,
     }
 
     const textN = 5
     const NZ = Z * textN
     const NZRoundedOffsetTopLeft = {
       x: Math.floor((topLeft.x - NZ) / NZ) * NZ,
-      y: Math.floor((topLeft.y - NZ) / NZ) * NZ,
+      // when y is cartesian (yInvN = -1), we need to add 2 rows to the top
+      y: Math.floor((topLeft.y - NZ) / NZ + (yInvN == -1 ? 2 : 0)) * NZ,
     }
     const NZRoundedOffsetBottomRight = {
       x: NZRoundedOffsetTopLeft.x + NZ * cellScreenWidth,
-      y: NZRoundedOffsetTopLeft.y + NZ * cellScreenHeight,
+      y: NZRoundedOffsetTopLeft.y + NZ * cellScreenHeight * yInvN,
     }
 
     ctx.globalAlpha = 1
     ctx.strokeStyle = majorColor
+    // Major Lines
     drawGridLines(Z, zRoundedOffsetTopLeft, zRoundedOffsetBottomRight)
     drawGridText(NZ, NZRoundedOffsetTopLeft, NZRoundedOffsetBottomRight)
+    // Minor Lines
     ctx.globalAlpha = 1 - Zp
     drawGridLines(NZ / 10, NZRoundedOffsetTopLeft, NZRoundedOffsetBottomRight)
     ctx.globalAlpha = 1 - Zp
