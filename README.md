@@ -1,6 +1,6 @@
 # react-supergrid
 
-[Demo](https://supergrid.tscircuit.com) &middot; [npm](https://npmjs.com/package/react-supergrid)
+[online demo](https://supergrid.tscircuit.com) &middot; [npm](https://npmjs.com/package/react-supergrid)
 
 Easily create a grid with infinitely nesting subgrid cells.
 
