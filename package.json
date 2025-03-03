@@ -7,7 +7,9 @@
   "scripts": {
     "build": "tsup ./src --dts --sourcemap",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+        "format": "biome format . --write",
+    "format:check": "biome format ."
   },
   "keywords": [],
   "author": "",
@@ -30,6 +32,7 @@
     "storybook": "^7.2.3",
     "transformation-matrix": "^2.15.0",
     "tsup": "^7.2.0",
-    "use-mouse-matrix-transform": "^1.1.5"
+    "use-mouse-matrix-transform": "^1.1.5",
+    "@biomejs/biome": "^1.9.4"
   }
 }
