@@ -103,11 +103,24 @@ export const SuperGrid = (props: SuperGridProps) => {
     const ctx = ref.current.getContext("2d")!
     if (!ctx) return
 
-    // Determine the effective grid step based on scale.
+    /**
+     * Upper-bound at which minor cell becomes major cell.
+     *
+     * As you zoom in, this will go from 2000 to 200 to 20 to 2 etc. in discrete
+     * steps.
+     */
     const Z =
       screenSpaceCellSize / 10 ** Math.floor(Math.log10(localTransform.a))
     const yInvN = localTransform.d < 0 ? -1 : 1
+    /**
+     * Size of a minor cell in transform space.
+     */
     const Za = screenSpaceCellSize / 10 ** Math.log10(localTransform.a)
+    /**
+     * Percentage transition from major transition point.
+     *
+     * As you zoom in, Zp goes from 1 to 0 repeatedly
+     */
     const Zp = Za / Z
 
     function drawGridLines(
