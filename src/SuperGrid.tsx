@@ -81,11 +81,11 @@ export const SuperGrid = (props: SuperGridProps) => {
   } = props
 
   /**
-   * Max number of major cells you could draw on the screen across its width
+   * Max number of major cells you could draw on the screen across it's width
    */
   const cellScreenWidth = Math.ceil(width / screenSpaceCellSize) + 2
   /**
-   * Max number of major cells you could draw on the screen across its height
+   * Max number of major cells you could draw on the screen across it's height
    */
   const cellScreenHeight = Math.ceil(height / screenSpaceCellSize) + 2
 
