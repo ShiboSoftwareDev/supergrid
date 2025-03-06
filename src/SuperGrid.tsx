@@ -27,6 +27,7 @@ export interface SuperGridProps {
    * Represents the transformation between world and screen coordinates
    */
   transform: Matrix
+  onTransformChanged?: (transform: any) => void
   width: number
   height: number
   screenSpaceCellSize?: number
@@ -280,11 +281,16 @@ export const SuperGrid = (props: SuperGridProps) => {
       const deltaY = touch.clientY - lastTouch.current.y
 
       // Update the transform translation by simply adding the delta.
-      setLocalTransform((prev) => ({
-        ...prev,
-        e: prev.e + deltaX,
-        f: prev.f + deltaY,
-      }))
+      const newTransform = {
+        ...localTransform,
+        e: localTransform.e + deltaX,
+        f: localTransform.f + deltaY,
+      }
+      if (props.onTransformChanged) {
+        props.onTransformChanged(newTransform)
+      } else {
+        setLocalTransform(newTransform)
+      }
 
       lastTouch.current = { x: touch.clientX, y: touch.clientY }
     } else if (
@@ -308,7 +314,11 @@ export const SuperGrid = (props: SuperGridProps) => {
         translate(-initialMidpoint.x, -initialMidpoint.y),
         initialTransform,
       )
-      setLocalTransform(newTransform)
+      if (props.onTransformChanged) {
+        props.onTransformChanged(newTransform)
+      } else {
+        setLocalTransform(newTransform)
+      }
     }
   }
 
